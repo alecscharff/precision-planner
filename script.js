@@ -92,7 +92,7 @@ function updatePlot() {
   console.log('Updating plot with scale:', currentState.useLogScale ? 'log' : 'linear');
   
   // Get current values
-  const expectedRate = Number(document.getElementById('expectedRate').value);
+  const expectedRate = currentState.expectedRate;
   const sampleSizes = stats.generateSampleSizes(
     currentState.minSize, 
     currentState.maxSize, 
@@ -249,6 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   expectedRate.addEventListener('input', function() {
     expectedRateValue.textContent = this.value + '%';
+    currentState.expectedRate = Number(this.value);
     debouncedUpdatePlot();
     debouncedUpdateSummary();
   });
@@ -260,12 +261,15 @@ document.addEventListener('DOMContentLoaded', function() {
       if (maxVal < minVal) {
         maxSize.value = minVal;
       }
+      currentState.minSize = minVal;
+      currentState.maxSize = maxVal;
       debouncedUpdatePlot();
     });
   });
 
   summarySize.addEventListener('input', function() {
     this.value = stats.validateNumber(this.value, 2, 10000, 16);
+    currentState.summarySize = Number(this.value);
     debouncedUpdateSummary();
   });
 
