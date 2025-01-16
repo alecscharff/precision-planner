@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sample Size Planning Tool</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Top Explanation Section -->
+  <div class="explanation">
+    <div class="explanation-content">
+      <h1>Sample Size Planning Tool: Precision-Based Design</h1>
+      <p>
+        Plan your sample size based on desired precision :
+      </p>
+      <ul>
+        <li>If estimating a proportion, how narrow of a margin of error do you need? </li>
+        <li>If comparing different conditions, what's the smallest detectable difference you'll have?</li>
+      </ul>
+
+      <br>
+    </div>
+  </div>
+
+  <!-- Error Messages Container -->
+  <div id="errorContainer" class="error-container hidden"></div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Cards Stack -->
+    <div class="cards-stack">
+      <!-- Study Parameters Card -->
+      <div class="card">
+        <h2>Enter study parameters</h2>
+        <div class="card-content">
+          <div class="input-group">
+            <label for="measurementType">We are measuring:</label>
+            <div class="flex-row">
+              <select id="measurementType" class="select-input" aria-label="Measurement type">
+                <option value="success rate">success rate</option>
+                <option value="prevalence">prevalence</option>
+                <option value="satisfaction">satisfaction</option>
+                <option value="custom">other:</option>
+              </select>
+              <input 
+                type="text" 
+                id="customMeasurement" 
+                placeholder="Enter measure..." 
+                class="hidden custom-input"
+                aria-label="Custom measurement type">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="expectedRate" id="rateLabel">Expected <span class="measurement-label">success rate</span>:</label>
+            <div class="range-container">
+              <input 
+                type="range" 
+                id="expectedRate" 
+                min="0" 
+                max="100" 
+                value="50" 
+                class="range-input"
+                aria-labelledby="rateLabel expectedRateValue">
+              <span id="expectedRateValue" aria-label="Current rate value">50%</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Sample size range under consideration:</label>
+            <div class="size-inputs">
+              <input 
+                type="number" 
+                id="minSize" 
+                value="16" 
+                min="2" 
+                class="number-input"
+                aria-label="Minimum sample size">
+              <span>to</span>
+              <input 
+                type="number" 
+                id="maxSize" 
+                value="528" 
+                min="2" 
+                class="number-input"
+                aria-label="Maximum sample size">
+              <span>participants</span>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Scale for visualization:</label>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input 
+                  type="radio" 
+                  name="scale" 
+                  value="log" 
+                  checked
+                  aria-label="Use logarithmic scale">
+                Log Scale
+              </label>
+              <label class="radio-label">
+                <input 
+                  type="radio" 
+                  name="scale" 
+                  value="linear"
+                  aria-label="Use linear scale">
+                Linear Scale
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Precision Plot Card -->
+      <div class="card">
+        <h2>Precision by Sample Size</h2>
+        <div id="precisionPlot" class="plot-container" aria-label="Graph showing precision by sample size"></div>
+      </div>
+
+      <!-- Summary Stats Card -->
+      <div class="card">
+        <h2>Precision estimate</h2>
+        <div id="summaryStats" class="summary-stats">
+          <div id="precisionSummary">
+            <p>
+              With a sample size of 
+              <input 
+                type="number" 
+                id="summarySize" 
+                value="16" 
+                min="2" 
+                class="inline-number"
+                aria-label="Current sample size">
+              and expected <span class="measurement-label">success rate</span> around 
+              <span id="summaryRate">50</span>%, we can measure 
+              <span class="measurement-label">success rate</span> with a margin of error of 
+              ±<span id="marginOfError">--</span>%
+            </p>
+          </div>
+          
+          <h2>If comparing two groups...</h2>
+          <div class="stat-group">
+            <label for="designType">Study design:</label>
+            <select id="designType" class="select-input" aria-label="Study design type">
+              <option value="between">Between-subjects design</option>
+              <option value="within">Within-subjects design</option>
+            </select>
+
+            <div id="comparisonStats">
+              <p>For comparing two conditions with <span id="comparisonSize">16</span> participants:</p>
+              <ul>
+                <li>We can detect differences of ±<span id="significantDiff">--</span>% or greater 
+                    with statistical significance (95% CI excluding zero)</li>
+                <li>We can be 95% confident about which condition is better when the true difference 
+                    is ±<span id="directionalDiff95">--</span>% or greater</li>
+                <li>We can be 80% confident about which condition is better when the true difference 
+                    is ±<span id="directionalDiff80">--</span>% or greater</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Info Card -->
+      <div class="card">
+        <h2>Understanding the Analysis</h2>
+        <div class="card-content">
+          <p>This tool uses a Bayesian approach with beta-binomial distribution to calculate:</p>
+          <ul>
+            <li>Credible intervals (Bayesian version of confidence intervals) for more intuitive 
+                probability statements</li>
+            <li>Minimum detectable differences between treatments, both for statistical significance 
+                and directional confidence</li>
+            <li>How precision improves with increasing sample size</li>
+          </ul>
+          <p>All calculations use a uniform prior, which makes minimal assumptions about the outcomes 
+             before collecting data.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2024. Created following examples by Alec Scharff.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
