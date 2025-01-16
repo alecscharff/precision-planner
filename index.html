@@ -76,7 +76,7 @@
               <input 
                 type="number" 
                 id="minSize" 
-                value="16" 
+                value="6" 
                 min="2" 
                 class="number-input"
                 aria-label="Minimum sample size">
@@ -84,7 +84,7 @@
               <input 
                 type="number" 
                 id="maxSize" 
-                value="528" 
+                value="100" 
                 min="2" 
                 class="number-input"
                 aria-label="Maximum sample size">
@@ -99,18 +99,18 @@
                 <input 
                   type="radio" 
                   name="scale" 
-                  value="log" 
+                  value="linear"
                   checked
-                  aria-label="Use logarithmic scale">
-                Log Scale
+                  aria-label="Use linear scale">
+                Linear Scale
               </label>
               <label class="radio-label">
                 <input 
                   type="radio" 
                   name="scale" 
-                  value="linear"
-                  aria-label="Use linear scale">
-                Linear Scale
+                  value="log" 
+                  aria-label="Use logarithmic scale">
+                Log Scale
               </label>
             </div>
           </div>
@@ -119,13 +119,13 @@
 
       <!-- Precision Plot Card -->
       <div class="card">
-        <h2>Precision by Sample Size</h2>
+        <h2>What precision would different sample sizes get you?</h2>
         <div id="precisionPlot" class="plot-container" aria-label="Graph showing precision by sample size"></div>
       </div>
 
       <!-- Summary Stats Card -->
       <div class="card">
-        <h2>Precision estimate</h2>
+        <h2>Estimating precision from sample size</h2>
         <div id="summaryStats" class="summary-stats">
           <div id="precisionSummary">
             <p>
@@ -133,14 +133,14 @@
               <input 
                 type="number" 
                 id="summarySize" 
-                value="16" 
+                value="6" 
                 min="2" 
                 class="inline-number"
                 aria-label="Current sample size">
               and expected <span class="measurement-label">success rate</span> around 
               <span id="summaryRate">50</span>%, we can measure 
               <span class="measurement-label">success rate</span> with a margin of error of 
-              ±<span id="marginOfError">--</span>%
+              ±<span id="marginOfError">--</span>% (confidence interval half-width)
             </p>
           </div>
           
@@ -155,6 +155,7 @@
             <div id="comparisonStats">
               <p>For comparing two conditions with <span id="comparisonSize">16</span> participants:</p>
               <ul>
+                <li>abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz</li>
                 <li>We can detect differences of ±<span id="significantDiff">--</span>% or greater 
                     with statistical significance (95% CI excluding zero)</li>
                 <li>We can be 95% confident about which condition is better when the true difference 

@@ -89,7 +89,7 @@ let currentState = {
 };
 
 function updatePlot() {
-  console.log('Updating plot...');
+  console.log('Updating plot with scale:', currentState.useLogScale ? 'log' : 'linear');
   
   // Get current values
   const expectedRate = Number(document.getElementById('expectedRate').value);
@@ -118,7 +118,8 @@ function updatePlot() {
   const layout = {
     xaxis: {
       title: 'Sample Size',
-      type: currentState.useLogScale ? 'log' : 'linear'
+      type: currentState.useLogScale ? 'log' : 'linear',
+      tickformat: 'd'
     },
     yaxis: {
       title: 'Margin of Error (±%)',
@@ -269,7 +270,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   document.querySelectorAll('input[name="scale"]').forEach(input => {
-    input.addEventListener('change', debouncedUpdatePlot);
+    input.addEventListener('change', function() {
+      console.log('Scale changed to:', this.value);
+      currentState.useLogScale = this.value === 'log';
+      debouncedUpdatePlot();
+    });
   });
 
   designType.addEventListener('change', debouncedUpdateSummary);
@@ -278,3 +283,41 @@ document.addEventListener('DOMContentLoaded', function() {
   updatePlot();
   updateSummary();
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+  // DOM Elements
+  const minSizeInput = document.getElementById('minSize');
+  const maxSizeInput = document.getElementById('maxSize');
+
+  function validateAndUpdateSizes() {
+    const minVal = Math.max(2, Number(minSizeInput.value));
+    const maxVal = Math.max(minVal, Number(maxSizeInput.value));
+    
+    // Update state
+    currentState.minSize = minVal;
+    currentState.maxSize = maxVal;
+    
+    // Update inputs if needed
+    minSizeInput.value = minVal;
+    maxSizeInput.value = maxVal;
+    
+    // Update visualizations
+    updatePlot();
+  }
+
+  // Validate on blur
+  minSizeInput.addEventListener('blur', validateAndUpdateSizes);
+  maxSizeInput.addEventListener('blur', validateAndUpdateSizes);
+
+  // Validate on Enter
+  minSizeInput.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') validateAndUpdateSizes();
+  });
+  maxSizeInput.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') validateAndUpdateSizes();
+  });
+
+  // ...existing event listeners...
+});
+
+// ...existing code...
